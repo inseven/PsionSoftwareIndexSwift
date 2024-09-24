@@ -32,19 +32,22 @@ protocol LibraryModelDelegate: AnyObject {
 @MainActor class LibraryModel: ObservableObject {
 
     @Published var programs: [Program] = []
-    @Published var filter: String = ""
+    @Published var searchFilter: String = ""
     @Published var filteredPrograms: [Program] = []
-
-    private var cancellables: Set<AnyCancellable> = []
 
     weak var delegate: LibraryModelDelegate?
 
-    init() {
+    private var cancellables: Set<AnyCancellable> = []
+
+    private let filter: (Release) -> Bool
+
+    init(filter: @escaping (Release) -> Bool = { _ in true }) {
+        self.filter = filter
     }
 
     @MainActor func start() {
         $programs
-            .combineLatest($filter)
+            .combineLatest($searchFilter)
             .map { programs, filter in
                return programs.filter { filter.isEmpty || $0.name.localizedStandardContains(filter) }
             }
@@ -61,7 +64,7 @@ protocol LibraryModelDelegate: AnyObject {
     }
 
     @MainActor private func fetch() async {
-        let url = URL(string: "https://software.psion.info/api/v1/programs/")!
+        let url = URL.softwareIndexAPIV1.appendingPathComponent("programs")
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             // TODO: Check for success
@@ -72,14 +75,15 @@ protocol LibraryModelDelegate: AnyObject {
 
                     let variants: [Collection] = version.variants.compactMap { collection in
 
-                        let items: [Release] = collection.items.compactMap { release in
-                            guard release.kind == .installer && release.hasDownload else {
+                        let items: [Release] = collection.items.compactMap { release -> Release? in
+                            guard filter(release) else {
                                 return nil
                             }
                             return Release(uid: release.uid,
                                            kind: release.kind,
                                            icon: release.icon,
-                                           reference: release.reference)
+                                           reference: release.reference,
+                                           tags: release.tags)
                         }
 
                         guard let release = items.first else {
@@ -98,7 +102,7 @@ protocol LibraryModelDelegate: AnyObject {
 
                 }
 
-                guard versions.count > 0 && program.tags.contains("opl") else {
+                guard versions.count > 0 else {
                     return nil
                 }
 

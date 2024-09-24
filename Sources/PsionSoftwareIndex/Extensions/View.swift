@@ -18,43 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+import SwiftUI
 
-public struct Release: Codable, Identifiable {
+extension View {
 
-    public var id: String {
-        return uid + referenceString
-    }
-
-    let uid: String  // TODO: Rename to 'identifier'
-    public let kind: Kind
-    let icon: Image?
-    let reference: [ReferenceItem]
-    public let tags: [String]
-
-    var iconURL: URL? {
-        guard let icon else {
-            return nil
+    func inlineTitle() -> some View {
+#if os(iOS)
+        if #available(iOS 17.0, *) {
+            return toolbarTitleDisplayMode(.inline)
+        } else {
+            return navigationBarTitleDisplayMode(.inline)
         }
-        return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
-    }
-
-    var referenceString: String {
-        return reference
-            .map { $0.name }
-            .joined(separator: " - ")
-    }
-
-    public var hasDownload: Bool {
-        return reference.last?.url != nil
-    }
-
-    var filename: String {
-        return reference.last!.name.lastPathComponent
-    }
-
-    var downloadURL: URL? {
-        return reference.last?.url
+#else
+        return toolbarTitleDisplayMode(.inline)
+#endif
     }
 
 }

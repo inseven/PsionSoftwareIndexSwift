@@ -34,7 +34,7 @@ cd "$ROOT_DIRECTORY"
 xcodebuild -scheme PsionSoftwareIndexSwift -showdestinations
 
 # Build.
-# xcodebuild -scheme PsionSoftwareIndexSwift -destination "platform=macOS" clean build
+xcodebuild -scheme PsionSoftwareIndexSwift -destination "platform=macOS" clean build
 xcodebuild -scheme PsionSoftwareIndexSwift -destination "$DEFAULT_IPHONE_DESTINATION" clean build
 
 # Test.

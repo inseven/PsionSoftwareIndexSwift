@@ -18,43 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+import Testing
+@testable import Example
 
-public struct Release: Codable, Identifiable {
+struct ExampleTests {
 
-    public var id: String {
-        return uid + referenceString
-    }
-
-    let uid: String  // TODO: Rename to 'identifier'
-    public let kind: Kind
-    let icon: Image?
-    let reference: [ReferenceItem]
-    public let tags: [String]
-
-    var iconURL: URL? {
-        guard let icon else {
-            return nil
-        }
-        return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
-    }
-
-    var referenceString: String {
-        return reference
-            .map { $0.name }
-            .joined(separator: " - ")
-    }
-
-    public var hasDownload: Bool {
-        return reference.last?.url != nil
-    }
-
-    var filename: String {
-        return reference.last!.name.lastPathComponent
-    }
-
-    var downloadURL: URL? {
-        return reference.last?.url
+    @Test func example() async throws {
+        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
     }
 
 }

@@ -87,8 +87,8 @@ struct ProgramView: View {
             }
         }
         .listStyle(.plain)
+        .inlineTitle()
         .navigationTitle(program.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
 }
