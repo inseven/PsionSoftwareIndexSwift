@@ -20,7 +20,7 @@
 
 import Foundation
 
-enum Kind: String, Codable {
+public enum Kind: String, Codable {
     case installer
     case standalone
 }

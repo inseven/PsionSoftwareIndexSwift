@@ -21,6 +21,8 @@
 import Combine
 import SwiftUI
 
+#if os(iOS)
+
 public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     func psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: PsionSoftwareIndexViewController)
@@ -57,3 +59,5 @@ extension PsionSoftwareIndexViewController: LibraryModelDelegate {
     }
 
 }
+
+#endif

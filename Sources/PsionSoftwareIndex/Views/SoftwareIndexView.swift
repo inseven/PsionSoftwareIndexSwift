@@ -20,20 +20,58 @@
 
 import SwiftUI
 
+class LibraryModelBlockDelegate: LibraryModelDelegate {
+
+    let complete: (URL?) -> Void
+
+    init(complete: @escaping (URL?) -> Void) {
+        self.complete = complete
+    }
+
+    func libraryModelDidCancel(libraryModel: LibraryModel) {
+        self.complete(nil)
+    }
+
+    func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
+        self.complete(url)
+    }
+
+}
+
+// TODO: Rename?
 public struct SoftwareIndexView: View {
 
     @StateObject var model: LibraryModel
 
+    let delegate: LibraryModelBlockDelegate?
+
     init(model: LibraryModel) {
         _model = StateObject(wrappedValue: model)
+        delegate = nil
+    }
+
+    public init(filter: @escaping (Release) -> Bool = { _ in true }, completion: @escaping (URL?) -> Void) {
+        let delegate = LibraryModelBlockDelegate(complete: completion)
+        let libraryModel = LibraryModel(filter: filter)
+        libraryModel.delegate = delegate
+        _model = StateObject(wrappedValue: libraryModel)
+        self.delegate = delegate
     }
 
     public var body: some View {
+#if os(macOS)
+        NavigationStack {
+            ProgramsView()
+                .environmentObject(model)
+        }
+        .frame(width: 600, height: 400)
+#else
         NavigationView {
             ProgramsView()
                 .environmentObject(model)
         }
         .navigationViewStyle(.stack)
+#endif
     }
 
 }

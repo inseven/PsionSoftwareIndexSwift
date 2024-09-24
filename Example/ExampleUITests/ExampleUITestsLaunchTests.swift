@@ -18,43 +18,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+import XCTest
 
-public struct Release: Codable, Identifiable {
+final class ExampleUITestsLaunchTests: XCTestCase {
 
-    public var id: String {
-        return uid + referenceString
+    override class var runsForEachTargetApplicationUIConfiguration: Bool {
+        true
     }
 
-    let uid: String  // TODO: Rename to 'identifier'
-    public let kind: Kind
-    let icon: Image?
-    let reference: [ReferenceItem]
-    public let tags: [String]
-
-    var iconURL: URL? {
-        guard let icon else {
-            return nil
-        }
-        return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
+    override func setUpWithError() throws {
+        continueAfterFailure = false
     }
 
-    var referenceString: String {
-        return reference
-            .map { $0.name }
-            .joined(separator: " - ")
-    }
+    @MainActor
+    func testLaunch() throws {
+        let app = XCUIApplication()
+        app.launch()
 
-    public var hasDownload: Bool {
-        return reference.last?.url != nil
-    }
+        // Insert steps here to perform after app launch but before taking a screenshot,
+        // such as logging into a test account or navigating somewhere in the app
 
-    var filename: String {
-        return reference.last!.name.lastPathComponent
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Launch Screen"
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
-
-    var downloadURL: URL? {
-        return reference.last?.url
-    }
-
 }

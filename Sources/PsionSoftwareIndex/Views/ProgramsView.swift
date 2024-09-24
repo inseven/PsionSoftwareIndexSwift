@@ -27,22 +27,23 @@ struct ProgramsView: View {
     @EnvironmentObject private var libraryModel: LibraryModel
 
     var body: some View {
-        List {
-            ForEach(libraryModel.filteredPrograms) { program in
-                NavigationLink {
-                    ProgramView(program: program)
-                        .environmentObject(libraryModel)
-                } label: {
-                    Label {
-                        Text(program.name)
-                    } icon: {
-                        IconView(url: program.iconURL)
+        ScrollView {
+            TitleView("All Programs")
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 240))], spacing: 0) {
+                ForEach(libraryModel.filteredPrograms) { program in
+                    NavigationLink {
+                        ProgramView(program: program)
+                            .environmentObject(libraryModel)
+                    } label: {
+                        ItemView(imageURL: program.iconURL,
+                                 title: program.name)
                     }
+                    .buttonStyle(.plain)
                 }
             }
+            .padding(.trailing)
         }
-        .listStyle(.plain)
-        .searchable(text: $libraryModel.filter)
+        .searchable(text: $libraryModel.searchFilter)
         .navigationTitle("Software Index")
         .toolbar {
             ToolbarItem(placement: .destructiveAction) {

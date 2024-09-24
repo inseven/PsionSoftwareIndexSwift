@@ -18,43 +18,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+import SwiftUI
 
-public struct Release: Codable, Identifiable {
+struct TitleView: View {
 
-    public var id: String {
-        return uid + referenceString
+    let tableName: LocalizedStringKey
+
+    init(_ tableName: LocalizedStringKey) {
+        self.tableName = tableName
     }
 
-    let uid: String  // TODO: Rename to 'identifier'
-    public let kind: Kind
-    let icon: Image?
-    let reference: [ReferenceItem]
-    public let tags: [String]
-
-    var iconURL: URL? {
-        guard let icon else {
-            return nil
+    var body: some View {
+        HStack {
+            Text(tableName)
+                .font(.title)
+            Spacer()
         }
-        return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
-    }
-
-    var referenceString: String {
-        return reference
-            .map { $0.name }
-            .joined(separator: " - ")
-    }
-
-    public var hasDownload: Bool {
-        return reference.last?.url != nil
-    }
-
-    var filename: String {
-        return reference.last!.name.lastPathComponent
-    }
-
-    var downloadURL: URL? {
-        return reference.last?.url
+        .padding()
     }
 
 }
