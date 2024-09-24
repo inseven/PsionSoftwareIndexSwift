@@ -32,8 +32,23 @@ struct ProgramView: View {
                 Section {
                     ScrollView(.horizontal) {
                         HStack {
-                            ForEach(program.screenshots ?? [], id: \.self) { screenshot in
-                                AsyncImage(url: URL.softwareIndexAPIV1.appendingPathComponent(screenshot))
+                            ForEach(program.screenshots ?? [], id: \.path) { screenshot in
+                                AsyncImage(url: URL.softwareIndexAPIV1.appendingPathComponent(screenshot.path)) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxHeight: 200)
+                                        .cornerRadius(8)
+                                        .transition(.opacity.animation(.easeInOut))
+                                } placeholder: {
+                                    Rectangle()
+                                        .fill(.tertiary)
+                                        .aspectRatio(CGFloat(screenshot.width) / CGFloat(screenshot.height),
+                                                     contentMode: .fit)
+                                        .frame(maxHeight: 200)
+                                        .cornerRadius(8)
+                                        .transition(.opacity.animation(.easeInOut))
+                                }
                             }
                         }
                     }

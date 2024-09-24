@@ -31,7 +31,7 @@ struct Program: Codable, Identifiable {
     let icon: Image?
     let versions: [Version]
     let tags: [String]
-    var screenshots: [String]?
+    var screenshots: [Image]?
 
     var iconURL: URL? {
         guard let icon else {
