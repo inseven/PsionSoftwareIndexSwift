@@ -10,12 +10,12 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "PsionSoftwareIndexSwift",
-            targets: ["PsionSoftwareIndexSwift"]),
+            name: "PsionSoftwareIndex",
+            targets: ["PsionSoftwareIndex"]),
     ],
     targets: [
         .target(
-            name: "PsionSoftwareIndexSwift",
+            name: "PsionSoftwareIndex",
             resources: [
                 .process("Resources")
             ]
@@ -23,7 +23,7 @@ let package = Package(
         .testTarget(
             name: "PsionSoftwareIndexSwiftTests",
             dependencies: [
-                "PsionSoftwareIndexSwift"
+                "PsionSoftwareIndex"
             ]
         ),
     ]

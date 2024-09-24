@@ -21,16 +21,17 @@
 import Combine
 import SwiftUI
 
-public protocol SoftwareIndexViewControllerDelegate: AnyObject {
+public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
-    func softwareIndexViewCntrollerDidCancel(softwareIndexViewController: SoftwareIndexViewController)
-    func softwareIndexViewCntroller(softwareIndexViewCntroller: SoftwareIndexViewController, didSelectURL url: URL)
+    func psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: PsionSoftwareIndexViewController)
+    func psionSoftwareIndexViewController(psionSoftwareIndexViewController: PsionSoftwareIndexViewController,
+                                          didSelectURL url: URL)
 
 }
 
-@MainActor public class SoftwareIndexViewController: UIHostingController<SoftwareIndexView> {
+@MainActor public class PsionSoftwareIndexViewController: UIHostingController<SoftwareIndexView> {
 
-    public weak var delegate: SoftwareIndexViewControllerDelegate?
+    public weak var delegate: PsionSoftwareIndexViewControllerDelegate?
 
     private var libraryModel = LibraryModel()
 
@@ -45,14 +46,14 @@ public protocol SoftwareIndexViewControllerDelegate: AnyObject {
 
 }
 
-extension SoftwareIndexViewController: LibraryModelDelegate {
+extension PsionSoftwareIndexViewController: LibraryModelDelegate {
 
     func libraryModelDidCancel(libraryModel: LibraryModel) {
-        delegate?.softwareIndexViewCntrollerDidCancel(softwareIndexViewController: self)
+        delegate?.psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: self)
     }
 
     func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
-        delegate?.softwareIndexViewCntroller(softwareIndexViewCntroller: self, didSelectURL: url)
+        delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectURL: url)
     }
 
 }
