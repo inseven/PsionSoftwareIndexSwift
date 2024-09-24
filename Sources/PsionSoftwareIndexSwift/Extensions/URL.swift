@@ -18,25 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import SwiftUI
+import Foundation
 
-struct IconView: View {
+extension URL {
 
-    let url: URL?
-
-    var body: some View {
-        if let url {
-            AsyncImage(url: url) { image in
-                image
-                    .interpolation(.none)
-            } placeholder: {
-                Image(.unknownAppIcon)
-                    .interpolation(.none)
-            }
-        } else {
-            Image(.unknownAppIcon)
-                .interpolation(.none)
-        }
-    }
+    static let softwareIndexAPIV1 = URL(string: "https://software.psion.info/api/v1")!
 
 }

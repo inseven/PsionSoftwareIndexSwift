@@ -21,12 +21,6 @@
 import Combine
 import SwiftUI
 
-extension URL {
-
-    static let softwareIndexAPIV1 = URL(string: "https://software.psion.info/api/v1")!
-
-}
-
 /// Callbacks always occur on `MainActor`.
 protocol LibraryModelDelegate: AnyObject {
 
@@ -36,108 +30,6 @@ protocol LibraryModelDelegate: AnyObject {
 }
 
 @MainActor class LibraryModel: ObservableObject {
-
-    enum Kind: String, Codable {
-        case installer
-        case standalone
-    }
-
-    struct ReferenceItem: Codable {
-
-        let name: String
-        let url: URL?
-
-    }
-
-    struct Release: Codable, Identifiable {
-
-        var id: String {
-            return uid + referenceString
-        }
-
-        let uid: String  // TODO: Rename to 'identifier'
-        let kind: Kind
-        let icon: Image?
-        let reference: [ReferenceItem]
-
-        var iconURL: URL? {
-            guard let icon else {
-                return nil
-            }
-            return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
-        }
-
-        var referenceString: String {
-            return reference
-                .map { $0.name }
-                .joined(separator: " - ")
-        }
-
-        var hasDownload: Bool {
-            return reference.last?.url != nil
-        }
-
-        var filename: String {
-            return reference.last!.name.lastPathComponent
-        }
-
-        var downloadURL: URL? {
-            return reference.last?.url
-        }
-
-    }
-
-    struct Collection: Codable, Identifiable {
-
-        var id: String {
-            return identifier
-        }
-
-        let identifier: String
-        let items: [Release]
-
-    }
-
-    struct Version: Codable, Identifiable {
-
-        var id: String {
-            return version
-        }
-
-        let version: String  // TODO: Rename to 'identifier'
-        let variants: [Collection]  // TODO: Is this actually a good name?
-
-    }
-
-    struct Image: Codable {
-
-        let width: Int
-        let height: Int
-        let path: String
-
-    }
-
-    struct Program: Codable, Identifiable {
-
-        var id: String {
-            return uid
-        }
-
-        let uid: String  // TODO: Rename to 'identifier'
-        let name: String
-        let icon: Image?
-        let versions: [Version]
-        let tags: [String]
-        var screenshots: [String]?
-
-        var iconURL: URL? {
-            guard let icon else {
-                return nil
-            }
-            return URL.softwareIndexAPIV1.appendingPathComponent(icon.path)
-        }
-
-    }
 
     @Published var programs: [Program] = []
     @Published var filter: String = ""
