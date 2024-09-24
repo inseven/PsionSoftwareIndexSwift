@@ -4,6 +4,10 @@ import PackageDescription
 
 let package = Package(
     name: "PsionSoftwareIndexSwift",
+    platforms: [
+        .iOS(.v15),
+        // .macOS(.v13),
+    ],
     products: [
         .library(
             name: "PsionSoftwareIndexSwift",
@@ -11,10 +15,16 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "PsionSoftwareIndexSwift"),
+            name: "PsionSoftwareIndexSwift",
+            resources: [
+                .process("Resources")
+            ]
+        ),
         .testTarget(
             name: "PsionSoftwareIndexSwiftTests",
-            dependencies: ["PsionSoftwareIndexSwift"]
+            dependencies: [
+                "PsionSoftwareIndexSwift"
+            ]
         ),
     ]
 )
