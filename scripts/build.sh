@@ -38,5 +38,31 @@ xcodebuild -scheme PsionSoftwareIndexSwift -destination "platform=macOS" clean b
 xcodebuild -scheme PsionSoftwareIndexSwift -destination "$DEFAULT_IPHONE_DESTINATION" clean build
 
 # Test.
-# xcodebuild -scheme PsionSoftwareIndexSwift -destination "platform=macOS" test
-# xcodebuild -scheme PsionSoftwareIndexSwift -destination "$DEFAULT_IPHONE_DESTINATION" test
+xcodebuild -scheme PsionSoftwareIndexSwift -destination "platform=macOS" test
+xcodebuild -scheme PsionSoftwareIndexSwift -destination "$DEFAULT_IPHONE_DESTINATION" test
+
+# Build the example project.
+
+cd "$ROOT_DIRECTORY/Example"
+
+# N.B. We skip code-signing to allow us to sign without a development certificate; this is fine for builds but wouldn't
+# allow us to run the app for local testing.
+
+# macOS
+xcodebuild \
+    -scheme Example \
+    -config Debug \
+    CODE_SIGN_IDENTITY="" \
+    CODE_SIGNING_REQUIRED=NO \
+    CODE_SIGNING_ALLOWED=NO \
+    clean build
+
+# iOS
+xcodebuild \
+    -scheme Example \
+    -sdk iphoneos \
+    -config Debug \
+    CODE_SIGN_IDENTITY="" \
+    CODE_SIGNING_REQUIRED=NO \
+    CODE_SIGNING_ALLOWED=NO \
+    clean build
