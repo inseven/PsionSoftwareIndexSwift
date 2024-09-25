@@ -35,9 +35,10 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     public weak var delegate: PsionSoftwareIndexViewControllerDelegate?
 
-    private var libraryModel = LibraryModel()
+    private var libraryModel: LibraryModel
 
-    public init() {
+    public init(filter: @escaping (Release) -> Bool = { _ in true }) {
+        self.libraryModel = LibraryModel(filter: filter)
         super.init(rootView: SoftwareIndexView(model: libraryModel))
         libraryModel.delegate = self
     }

@@ -41,7 +41,7 @@ protocol LibraryModelDelegate: AnyObject {
 
     private let filter: (Release) -> Bool
 
-    init(filter: @escaping (Release) -> Bool = { _ in true }) {
+    init(filter: @escaping (Release) -> Bool) {
         self.filter = filter
     }
 
