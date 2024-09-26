@@ -81,6 +81,7 @@ protocol LibraryModelDelegate: AnyObject {
                             }
                             return Release(uid: release.uid,
                                            kind: release.kind,
+                                           name: release.name,
                                            icon: release.icon,
                                            reference: release.reference,
                                            tags: release.tags)
