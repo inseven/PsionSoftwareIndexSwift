@@ -25,7 +25,7 @@ import SwiftUI
 protocol LibraryModelDelegate: AnyObject {
 
     @MainActor func libraryModelDidCancel(libraryModel: LibraryModel)
-    @MainActor func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL)
+    @MainActor func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item)
 
 }
 
@@ -128,8 +128,9 @@ protocol LibraryModelDelegate: AnyObject {
             return
         }
         let (url, _) = try await URLSession.shared.download(from: downloadURL)
+        let item = SoftwareIndexView.Item(sourceURL: downloadURL, url: url)
         await MainActor.run {
-            self.delegate?.libraryModel(libraryModel: self, didSelectURL: url)
+            self.delegate?.libraryModel(libraryModel: self, didSelectItem: item)
         }
     }
 

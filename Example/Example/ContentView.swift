@@ -45,7 +45,7 @@ struct ContentView: View {
         .sheet(item: $sheet) { sheet in
             switch sheet {
             case .index:
-                SoftwareIndexView { url in
+                SoftwareIndexView { item in
                     self.sheet = nil
                 }
             }

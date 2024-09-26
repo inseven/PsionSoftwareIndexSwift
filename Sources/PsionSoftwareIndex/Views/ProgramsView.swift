@@ -50,6 +50,7 @@ struct ProgramsView: View {
                 Button("Cancel") {
                     dismiss()
                 }
+                .keyboardShortcut(.cancelAction)
             }
         }
         .onAppear {

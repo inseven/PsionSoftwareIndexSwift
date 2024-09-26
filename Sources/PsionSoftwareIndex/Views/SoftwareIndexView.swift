@@ -22,9 +22,9 @@ import SwiftUI
 
 class LibraryModelBlockDelegate: LibraryModelDelegate {
 
-    let complete: (URL?) -> Void
+    let complete: (SoftwareIndexView.Item?) -> Void
 
-    init(complete: @escaping (URL?) -> Void) {
+    init(complete: @escaping (SoftwareIndexView.Item?) -> Void) {
         self.complete = complete
     }
 
@@ -32,14 +32,21 @@ class LibraryModelBlockDelegate: LibraryModelDelegate {
         self.complete(nil)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
-        self.complete(url)
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item) {
+        self.complete(item)
     }
 
 }
 
 // TODO: Rename?
 public struct SoftwareIndexView: View {
+
+    public struct Item {
+
+        public let sourceURL: URL
+        public let url: URL
+
+    }
 
     @StateObject var model: LibraryModel
 
@@ -50,7 +57,8 @@ public struct SoftwareIndexView: View {
         delegate = nil
     }
 
-    public init(filter: @escaping (Release) -> Bool = { _ in true }, completion: @escaping (URL?) -> Void) {
+    public init(filter: @escaping (Release) -> Bool = { _ in true },
+                completion: @escaping (SoftwareIndexView.Item?) -> Void) {
         let delegate = LibraryModelBlockDelegate(complete: completion)
         let libraryModel = LibraryModel(filter: filter)
         libraryModel.delegate = delegate

@@ -27,7 +27,7 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     func psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: PsionSoftwareIndexViewController)
     func psionSoftwareIndexViewController(psionSoftwareIndexViewController: PsionSoftwareIndexViewController,
-                                          didSelectURL url: URL)
+                                          didSelectItem item: SoftwareIndexView.Item)
 
 }
 
@@ -55,8 +55,8 @@ extension PsionSoftwareIndexViewController: LibraryModelDelegate {
         delegate?.psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: self)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
-        delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectURL: url)
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item) {
+        delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectItem: item)
     }
 
 }
