@@ -1,0 +1,33 @@
+{
+  "version" : 1,
+  "id" : "24670896-9CE6-40DD-86CB-111B3E0DEB8D",
+  "topColor" : {
+    "red" : 1,
+    "green" : 0.5763723254,
+    "alpha" : 1,
+    "blue" : 0
+  },
+  "symbol" : {
+    "family" : "sf-symbols",
+    "name" : "building.columns.fill"
+  },
+  "shadowHeight" : 0.3,
+  "iconScale" : 0.6598310368342595,
+  "symbolColor" : {
+    "green" : 0.9999999403953552,
+    "red" : 0.9999999403953552,
+    "blue" : 0.9999999403953552,
+    "alpha" : 1
+  },
+  "bottomColor" : {
+    "green" : 0.5763723254,
+    "red" : 1,
+    "alpha" : 1,
+    "blue" : 0
+  },
+  "iconOffset" : [
+    0.009362599206349187,
+    0
+  ],
+  "shadowOpacity" : 0.4
+}
