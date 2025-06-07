@@ -69,7 +69,6 @@ public struct SoftwareIndexView: View {
         style = [.cancellable]
     }
 
-    public init(filter: @escaping (Release) -> Bool = { _ in true },
     public init(style: Style = [.cancellable],
                 filter: @escaping (Release) -> Bool = { _ in true },
                 completion: @escaping (SoftwareIndexView.Item?) -> Void) {
