@@ -25,8 +25,11 @@ import SwiftUI
 /// Callbacks always occur on `MainActor`.
 protocol LibraryModelDelegate: AnyObject {
 
-    @MainActor func libraryModelDidCancel(libraryModel: LibraryModel)
-    @MainActor func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item)
+    @MainActor
+    func libraryModelDidCancel(libraryModel: LibraryModel)
+
+    @MainActor
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item)
 
 }
 
