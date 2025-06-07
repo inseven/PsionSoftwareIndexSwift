@@ -89,7 +89,7 @@ public struct SoftwareIndexView: View {
         .frame(width: 600, height: 400)
 #else
         NavigationView {
-            ProgramsView()
+            ProgramsView(style: style)
                 .environmentObject(model)
         }
         .navigationViewStyle(.stack)
