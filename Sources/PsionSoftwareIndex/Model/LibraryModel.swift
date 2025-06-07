@@ -144,7 +144,7 @@ protocol LibraryModelDelegate: AnyObject {
         try fileManager.moveItem(at: url, to: itemURL)
 
         // Call our delegate.
-        let item = SoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
+        let item = PsionSoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
         await MainActor.run {
             self.delegate?.libraryModel(libraryModel: self, didSelectItem: item)
         }
