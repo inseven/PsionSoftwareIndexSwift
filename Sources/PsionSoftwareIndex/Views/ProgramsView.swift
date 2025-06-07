@@ -22,8 +22,6 @@ import SwiftUI
 
 struct ProgramsView: View {
 
-    @Environment(\.dismiss) private var dismiss
-
     @EnvironmentObject private var libraryModel: LibraryModel
 
     var body: some View {
@@ -45,14 +43,6 @@ struct ProgramsView: View {
         }
         .searchable(text: $libraryModel.searchFilter)
         .navigationTitle("Psion Software Index")
-        .toolbar {
-            ToolbarItem(placement: .destructiveAction) {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
-            }
-        }
         .onAppear {
             libraryModel.start()
         }

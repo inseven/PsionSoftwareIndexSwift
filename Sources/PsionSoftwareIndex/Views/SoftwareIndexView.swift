@@ -48,6 +48,8 @@ public struct SoftwareIndexView: View {
 
     }
 
+    @Environment(\.dismiss) private var dismiss
+
     @StateObject var model: LibraryModel
 
     let delegate: LibraryModelBlockDelegate?
@@ -76,9 +78,17 @@ public struct SoftwareIndexView: View {
 #else
         NavigationView {
             ProgramsView()
-                .environmentObject(model)
+                .toolbar {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .keyboardShortcut(.cancelAction)
+                    }
+                }
         }
         .navigationViewStyle(.stack)
+        .environmentObject(model)
 #endif
     }
 
