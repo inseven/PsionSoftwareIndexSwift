@@ -22,10 +22,6 @@ import SwiftUI
 
 struct ProgramsView: View {
 
-    let style: SoftwareIndexView.Style
-
-    @Environment(\.dismiss) private var dismiss
-
     @EnvironmentObject private var libraryModel: LibraryModel
 
     var body: some View {
@@ -47,16 +43,6 @@ struct ProgramsView: View {
         }
         .searchable(text: $libraryModel.searchFilter)
         .navigationTitle("Psion Software Index")
-        .toolbar {
-            if style.contains(.cancellable) {
-                ToolbarItem(placement: .destructiveAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .keyboardShortcut(.cancelAction)
-                }
-            }
-        }
         .onAppear {
             libraryModel.start()
         }

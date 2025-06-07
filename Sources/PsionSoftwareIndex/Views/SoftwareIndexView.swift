@@ -41,16 +41,6 @@ class LibraryModelBlockDelegate: LibraryModelDelegate {
 // TODO: Rename?
 public struct SoftwareIndexView: View {
 
-    public struct Style: OptionSet, Sendable {
-        public let rawValue: Int
-
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
-
-        public static let cancellable = Self(rawValue: 1 << 0)
-    }
-
     public struct Item {
 
         public let sourceURL: URL
@@ -58,22 +48,20 @@ public struct SoftwareIndexView: View {
 
     }
 
+    @Environment(\.dismiss) private var dismiss
+
     @StateObject var model: LibraryModel
 
     let delegate: LibraryModelBlockDelegate?
-    let style: Style
 
     init(model: LibraryModel) {
         _model = StateObject(wrappedValue: model)
         delegate = nil
-        style = [.cancellable]
     }
 
-    public init(style: Style = [.cancellable],
-                filter: @escaping (Release) -> Bool = { _ in true },
+    public init(filter: @escaping (Release) -> Bool = { _ in true },
                 completion: @escaping (SoftwareIndexView.Item?) -> Void) {
         let delegate = LibraryModelBlockDelegate(complete: completion)
-        self.style = style
         let libraryModel = LibraryModel(filter: filter)
         libraryModel.delegate = delegate
         _model = StateObject(wrappedValue: libraryModel)
@@ -83,16 +71,24 @@ public struct SoftwareIndexView: View {
     public var body: some View {
 #if os(macOS)
         NavigationStack {
-            ProgramsView(style: style)
+            ProgramsView()
                 .environmentObject(model)
         }
         .frame(width: 600, height: 400)
 #else
         NavigationView {
-            ProgramsView(style: style)
-                .environmentObject(model)
+            ProgramsView()
+                .toolbar {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .keyboardShortcut(.cancelAction)
+                    }
+                }
         }
         .navigationViewStyle(.stack)
+        .environmentObject(model)
 #endif
     }
 
