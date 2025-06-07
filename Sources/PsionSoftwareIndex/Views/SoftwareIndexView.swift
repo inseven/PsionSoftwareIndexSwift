@@ -22,9 +22,9 @@ import SwiftUI
 
 class LibraryModelBlockDelegate: LibraryModelDelegate {
 
-    let complete: (SoftwareIndexView.Item?) -> Void
+    let complete: (PsionSoftwareIndexView.Item?) -> Void
 
-    init(complete: @escaping (SoftwareIndexView.Item?) -> Void) {
+    init(complete: @escaping (PsionSoftwareIndexView.Item?) -> Void) {
         self.complete = complete
     }
 
@@ -32,14 +32,13 @@ class LibraryModelBlockDelegate: LibraryModelDelegate {
         self.complete(nil)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item) {
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item) {
         self.complete(item)
     }
 
 }
 
-// TODO: Rename?
-public struct SoftwareIndexView: View {
+public struct PsionSoftwareIndexView: View {
 
     public struct Item {
 
@@ -60,12 +59,11 @@ public struct SoftwareIndexView: View {
     }
 
     public init(filter: @escaping (Release) -> Bool = { _ in true },
-                completion: @escaping (SoftwareIndexView.Item?) -> Void) {
-        let delegate = LibraryModelBlockDelegate(complete: completion)
+                completion: @escaping (PsionSoftwareIndexView.Item?) -> Void) {
+        self.delegate = LibraryModelBlockDelegate(complete: completion)
         let libraryModel = LibraryModel(filter: filter)
-        libraryModel.delegate = delegate
         _model = StateObject(wrappedValue: libraryModel)
-        self.delegate = delegate
+        libraryModel.delegate = delegate
     }
 
     public var body: some View {

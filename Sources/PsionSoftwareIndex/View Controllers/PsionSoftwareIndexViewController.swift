@@ -27,11 +27,11 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     func psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: PsionSoftwareIndexViewController)
     func psionSoftwareIndexViewController(psionSoftwareIndexViewController: PsionSoftwareIndexViewController,
-                                          didSelectItem item: SoftwareIndexView.Item)
+                                          didSelectItem item: PsionSoftwareIndexView.Item)
 
 }
 
-@MainActor public class PsionSoftwareIndexViewController: UIHostingController<SoftwareIndexView> {
+@MainActor public class PsionSoftwareIndexViewController: UIHostingController<PsionSoftwareIndexView> {
 
     public weak var delegate: PsionSoftwareIndexViewControllerDelegate?
 
@@ -39,7 +39,7 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     public init(filter: @escaping (Release) -> Bool = { _ in true }) {
         self.libraryModel = LibraryModel(filter: filter)
-        super.init(rootView: SoftwareIndexView(model: libraryModel))
+        super.init(rootView: PsionSoftwareIndexView(model: libraryModel))
         libraryModel.delegate = self
     }
 
@@ -55,7 +55,7 @@ extension PsionSoftwareIndexViewController: LibraryModelDelegate {
         delegate?.psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: self)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item) {
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item) {
         delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectItem: item)
     }
 
