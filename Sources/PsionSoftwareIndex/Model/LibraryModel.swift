@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 import Combine
+import Foundation
 import SwiftUI
 
 /// Callbacks always occur on `MainActor`.
@@ -128,8 +129,19 @@ protocol LibraryModelDelegate: AnyObject {
             print("No download URL!")
             return
         }
+
+        // Download the file.
         let (url, _) = try await URLSession.shared.download(from: downloadURL)
-        let item = SoftwareIndexView.Item(sourceURL: downloadURL, url: url)
+
+        // Create a temporary directory and move the downloaded contents to ensure it has the correct filename.
+        let fileManager = FileManager.default
+        let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent((UUID().uuidString))
+        try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true)
+        let itemURL = temporaryDirectory.appendingPathComponent(release.filename)
+        try fileManager.moveItem(at: url, to: itemURL)
+
+        // Call our delegate.
+        let item = SoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
         await MainActor.run {
             self.delegate?.libraryModel(libraryModel: self, didSelectItem: item)
         }
