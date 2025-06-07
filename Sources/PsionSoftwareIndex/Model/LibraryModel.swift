@@ -25,8 +25,11 @@ import SwiftUI
 /// Callbacks always occur on `MainActor`.
 protocol LibraryModelDelegate: AnyObject {
 
-    @MainActor func libraryModelDidCancel(libraryModel: LibraryModel)
-    @MainActor func libraryModel(libraryModel: LibraryModel, didSelectItem item: SoftwareIndexView.Item)
+    @MainActor
+    func libraryModelDidCancel(libraryModel: LibraryModel)
+
+    @MainActor
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item)
 
 }
 
@@ -141,7 +144,7 @@ protocol LibraryModelDelegate: AnyObject {
         try fileManager.moveItem(at: url, to: itemURL)
 
         // Call our delegate.
-        let item = SoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
+        let item = PsionSoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
         await MainActor.run {
             self.delegate?.libraryModel(libraryModel: self, didSelectItem: item)
         }

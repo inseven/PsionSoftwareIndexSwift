@@ -45,7 +45,7 @@ struct ContentView: View {
         .sheet(item: $sheet) { sheet in
             switch sheet {
             case .index:
-                SoftwareIndexView { item in
+                PsionSoftwareIndexView { item in
                     self.sheet = nil
                 }
             }
