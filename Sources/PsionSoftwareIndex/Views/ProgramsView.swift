@@ -26,7 +26,6 @@ struct ProgramsView: View {
 
     var body: some View {
         ScrollView {
-            TitleView("All Programs")
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 240))], spacing: 0) {
                 ForEach(libraryModel.filteredPrograms) { program in
                     NavigationLink {
