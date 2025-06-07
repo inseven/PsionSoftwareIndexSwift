@@ -44,7 +44,7 @@ struct ProgramsView: View {
             .padding(.trailing)
         }
         .searchable(text: $libraryModel.searchFilter)
-        .navigationTitle("Software Index")
+        .navigationTitle("Psion Software Index")
         .toolbar {
             ToolbarItem(placement: .destructiveAction) {
                 Button("Cancel") {
