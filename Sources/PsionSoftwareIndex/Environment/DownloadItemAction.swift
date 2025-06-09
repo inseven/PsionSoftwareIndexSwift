@@ -20,43 +20,42 @@
 
 import SwiftUI
 
-import PsionSoftwareIndex
+struct DownloadItemAction {
 
-struct ContentView: View {
+    let action: (PsionSoftwareIndexView.Item) -> Void
 
-    enum SheetType: Identifiable {
-
-        var id: Self { self }
-
-        case index
+    init() {
+        self.action = {_ in }
     }
 
-    @State var sheet: SheetType? = nil
-
-    var body: some View {
-        VStack {
-#if os(macOS)
-            PsionSoftwareIndexLink()
-#else
-            Button {
-                sheet = .index
-            } label: {
-                Text("Psion Software Index")
-            }
-#endif
-        }
-        .padding()
-        .sheet(item: $sheet) { sheet in
-            switch sheet {
-            case .index:
-                PsionSoftwareIndexView { item in
-                    self.sheet = nil
-                }
-            }
-        }
+    init(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) {
+        self.action = action
     }
+
+    func callAsFunction(_ item: PsionSoftwareIndexView.Item) {
+        self.action(item)
+    }
+
 }
 
-#Preview {
-    ContentView()
+extension EnvironmentValues {
+
+    @Entry var downloadItemAction = DownloadItemAction()
+
+}
+
+extension View {
+
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some View {
+        return environment(\.downloadItemAction, DownloadItemAction(perform: action))
+    }
+
+}
+
+extension Scene {
+
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some Scene {
+        return environment(\.downloadItemAction, DownloadItemAction(perform: action))
+    }
+
 }

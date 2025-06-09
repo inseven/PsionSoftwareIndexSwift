@@ -20,11 +20,22 @@
 
 import SwiftUI
 
+import PsionSoftwareIndex
+
 @main
 struct ExampleApp: App {
+
     var body: some Scene {
+
         WindowGroup {
             ContentView()
         }
+
+#if os(macOS)
+        PsionSoftwareIndexWindow()
+#endif
+
     }
+
+
 }

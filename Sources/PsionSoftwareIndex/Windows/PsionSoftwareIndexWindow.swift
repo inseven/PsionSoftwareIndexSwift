@@ -18,45 +18,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(macOS)
+
 import SwiftUI
 
-import PsionSoftwareIndex
+public struct PsionSoftwareIndexWindow: Scene {
 
-struct ContentView: View {
+    public static let id = "psion-software-index"
 
-    enum SheetType: Identifiable {
+    @Environment(\.downloadItemAction) private var downloadItemAction
 
-        var id: Self { self }
+    @State var error: Error? = nil
 
-        case index
+    public init() {
+
     }
 
-    @State var sheet: SheetType? = nil
-
-    var body: some View {
-        VStack {
-#if os(macOS)
-            PsionSoftwareIndexLink()
-#else
-            Button {
-                sheet = .index
-            } label: {
-                Text("Psion Software Index")
-            }
-#endif
-        }
-        .padding()
-        .sheet(item: $sheet) { sheet in
-            switch sheet {
-            case .index:
-                PsionSoftwareIndexView { item in
-                    self.sheet = nil
+    public var body: some Scene {
+        Window("Psion Software Index", id: Self.id) {
+            PsionSoftwareIndexView { release in
+                return release.kind == .installer && release.hasDownload
+            } completion: { item in
+                guard let item else {
+                    return
                 }
+                downloadItemAction(item)
             }
         }
+        .windowResizability(.contentSize)
     }
+
 }
 
-#Preview {
-    ContentView()
-}
+#endif
