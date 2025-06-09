@@ -18,45 +18,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(macOS)
+
 import SwiftUI
 
-import PsionSoftwareIndex
+extension EnvironmentValues {
 
-struct ContentView: View {
+    @Entry var downloadAction: (PsionSoftwareIndexView.Item) -> Void = { _ in }
 
-    enum SheetType: Identifiable {
+}
 
-        var id: Self { self }
+extension View {
 
-        case index
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some View {
+        return environment(\.downloadAction, action)
     }
 
-    @State var sheet: SheetType? = nil
+}
 
-    var body: some View {
-        VStack {
-#if os(macOS)
-            PsionSoftwareIndexLink()
-#else
-            Button {
-                sheet = .index
-            } label: {
-                Text("Psion Software Index")
-            }
-#endif
-        }
-        .padding()
-        .sheet(item: $sheet) { sheet in
-            switch sheet {
-            case .index:
-                PsionSoftwareIndexView { item in
-                    self.sheet = nil
+extension Scene {
+
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some Scene {
+        return environment(\.downloadAction, action)
+    }
+
+}
+
+public struct PsionSoftwareIndexWindow: Scene {
+
+    public static let id = "psion-software-index"
+
+    @Environment(\.downloadAction) private var downloadAction
+
+    @State var error: Error? = nil
+
+    public init() {
+
+    }
+
+    public var body: some Scene {
+        Window("Psion Software Index", id: Self.id) {
+            PsionSoftwareIndexView { release in
+                return release.kind == .installer && release.hasDownload
+            } completion: { item in
+                guard let item else {
+                    return
                 }
+                downloadAction(item)
             }
         }
+        .windowResizability(.contentSize)
     }
+
 }
 
-#Preview {
-    ContentView()
-}
+#endif
