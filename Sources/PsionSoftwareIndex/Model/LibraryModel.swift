@@ -154,7 +154,6 @@ protocol LibraryModelDelegate: AnyObject {
                 // Check for errors.
                 guard let url else {
                     throw error ?? PsionSoftwareIndexError.unknownDownloadFailure
-                    return
                 }
 
                 // Create a temporary directory and move the downloaded contents to ensure it has the correct filename.
