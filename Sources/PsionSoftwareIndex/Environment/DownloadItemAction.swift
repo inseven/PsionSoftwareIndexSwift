@@ -18,36 +18,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(macOS)
-
 import SwiftUI
 
-public struct PsionSoftwareIndexWindow: Scene {
+struct DownloadItemAction {
 
-    public static let id = "psion-software-index"
+    let action: (PsionSoftwareIndexView.Item) -> Void
 
-    @Environment(\.downloadItemAction) private var downloadItemAction
-
-    @State var error: Error? = nil
-
-    public init() {
-
+    init() {
+        self.action = {_ in }
     }
 
-    public var body: some Scene {
-        Window("Psion Software Index", id: Self.id) {
-            PsionSoftwareIndexView { release in
-                return release.kind == .installer && release.hasDownload
-            } completion: { item in
-                guard let item else {
-                    return
-                }
-                downloadItemAction(item)
-            }
-        }
-        .windowResizability(.contentSize)
+    init(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) {
+        self.action = action
+    }
+
+    func callAsFunction(_ item: PsionSoftwareIndexView.Item) {
+        self.action(item)
     }
 
 }
 
-#endif
+extension EnvironmentValues {
+
+    @Entry var downloadItemAction = DownloadItemAction()
+
+}
+
+extension View {
+
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some View {
+        return environment(\.downloadItemAction, DownloadItemAction(perform: action))
+    }
+
+}
+
+extension Scene {
+
+    public func onDownloadItem(perform action: @escaping (PsionSoftwareIndexView.Item) -> Void) -> some Scene {
+        return environment(\.downloadItemAction, DownloadItemAction(perform: action))
+    }
+
+}
