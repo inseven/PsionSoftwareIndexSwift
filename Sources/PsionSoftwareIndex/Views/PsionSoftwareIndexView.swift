@@ -20,6 +20,8 @@
 
 import SwiftUI
 
+import Interact
+
 class LibraryModelBlockDelegate: LibraryModelDelegate {
 
     let complete: (PsionSoftwareIndexView.Item?) -> Void
@@ -72,6 +74,7 @@ public struct PsionSoftwareIndexView: View {
             ProgramsView()
                 .environmentObject(model)
         }
+        .presents($model.error)
         .frame(minWidth: 800, maxWidth: .infinity, minHeight: 600)
 #else
         NavigationView {
@@ -86,6 +89,7 @@ public struct PsionSoftwareIndexView: View {
                 }
         }
         .navigationViewStyle(.stack)
+        .presents($model.error)
         .environmentObject(model)
 #endif
     }

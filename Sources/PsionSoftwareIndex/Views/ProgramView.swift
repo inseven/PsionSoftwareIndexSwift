@@ -66,20 +66,28 @@ struct ProgramView: View {
                                         .font(.footnote)
                                 }
                                 Spacer()
-                                Button {
-                                    Task {
-                                        do {
-                                            try await libraryModel.install(release: item)
-                                        } catch {
-                                            print("Failed to install software with error")
+                                if let downloadURL = item.downloadURL, let task = libraryModel.downloads[downloadURL] {
+                                    HStack {
+                                        ProgressView(task.progress)
+                                        Button("Cancel") {
+                                            libraryModel.downloads[downloadURL]?.cancel()
                                         }
                                     }
-                                } label: {
-                                    Label("Download", systemImage: "arrow.down")
-                                        .labelStyle(.iconOnly)
+                                } else {
+                                    Button {
+                                        libraryModel.download(item)
+                                    } label: {
+#if os(macOS)
+                                        Text("Download")
+#else
+                                        Label("Download", systemImage: "arrow.down")
+                                            .labelStyle(.iconOnly)
+#endif
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .buttonBorderShape(.capsule)
+                                    .disabled(item.downloadURL == nil)
                                 }
-                                .buttonStyle(.bordered)
-                                .buttonBorderShape(.capsule)
                             }
                         }
                     }
