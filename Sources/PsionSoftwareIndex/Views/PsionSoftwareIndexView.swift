@@ -89,6 +89,7 @@ public struct PsionSoftwareIndexView: View {
                 }
         }
         .navigationViewStyle(.stack)
+        .presents($model.error)
         .environmentObject(model)
 #endif
     }
