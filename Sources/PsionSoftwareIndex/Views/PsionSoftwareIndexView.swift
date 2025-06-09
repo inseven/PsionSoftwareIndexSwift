@@ -72,7 +72,7 @@ public struct PsionSoftwareIndexView: View {
             ProgramsView()
                 .environmentObject(model)
         }
-        .frame(width: 600, height: 400)
+        .frame(minWidth: 800, maxWidth: .infinity, minHeight: 600)
 #else
         NavigationView {
             ProgramsView()
