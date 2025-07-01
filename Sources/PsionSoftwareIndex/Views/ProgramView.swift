@@ -69,6 +69,8 @@ struct ProgramView: View {
                                 if let downloadURL = item.downloadURL, let task = libraryModel.downloads[downloadURL] {
                                     HStack {
                                         ProgressView(task.progress)
+                                            .progressViewStyle(.unadornedCircular)
+                                            .controlSize(.small)
                                         Button("Cancel") {
                                             libraryModel.downloads[downloadURL]?.cancel()
                                         }
