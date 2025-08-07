@@ -66,13 +66,13 @@ struct ProgramView: View {
                                         .font(.footnote)
                                 }
                                 Spacer()
-                                if let downloadURL = item.downloadURL, let task = libraryModel.downloads[downloadURL] {
+                                if let task = libraryModel.downloads[item.downloadURL] {
                                     HStack {
                                         ProgressView(task.progress)
                                             .progressViewStyle(.unadornedCircular)
                                             .controlSize(.small)
                                         Button("Cancel") {
-                                            libraryModel.downloads[downloadURL]?.cancel()
+                                            libraryModel.downloads[item.downloadURL]?.cancel()
                                         }
                                     }
                                 } else {

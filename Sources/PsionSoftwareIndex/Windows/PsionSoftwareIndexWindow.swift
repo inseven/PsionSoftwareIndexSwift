@@ -37,7 +37,7 @@ public struct PsionSoftwareIndexWindow: Scene {
     public var body: some Scene {
         Window("Psion Software Index", id: Self.id) {
             PsionSoftwareIndexView { release in
-                return release.kind == .installer && release.hasDownload
+                return release.kind == .installer
             } completion: { item in
                 guard let item else {
                     return

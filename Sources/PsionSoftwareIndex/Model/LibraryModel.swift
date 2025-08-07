@@ -89,6 +89,8 @@ protocol LibraryModelDelegate: AnyObject {
                                            kind: release.kind,
                                            name: release.name,
                                            icon: release.icon,
+                                           filename: release.filename,
+                                           sha256: release.sha256,
                                            reference: release.reference,
                                            tags: release.tags)
                         }
@@ -132,12 +134,12 @@ protocol LibraryModelDelegate: AnyObject {
     func download(_ release: Release) {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        // Ensure the item has a download URL and there there are no active downloads for that URL.
-        guard let downloadURL = release.downloadURL,
-              downloads[downloadURL] == nil
-        else {
+        // Ensure there are no active downloads for that URL.
+        guard downloads[release.downloadURL] == nil else {
             return
         }
+
+        let downloadURL = release.downloadURL
 
         // Create the download task.
         let downloadTask = URLSession.shared.downloadTask(with: downloadURL) { [weak self] url, response, error in

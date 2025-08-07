@@ -42,6 +42,7 @@ struct ProgramsView: View {
         }
         .searchable(text: $libraryModel.searchFilter)
         .navigationTitle("Psion Software Index")
+        .navigationSubtitle("\(libraryModel.filteredPrograms.count) Programs")
         .onAppear {
             libraryModel.start()
         }
