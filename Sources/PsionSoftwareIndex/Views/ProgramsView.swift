@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,10 @@ import SwiftUI
 
 struct ProgramsView: View {
 
-    @Environment(\.dismiss) private var dismiss
-
     @EnvironmentObject private var libraryModel: LibraryModel
 
     var body: some View {
         ScrollView {
-            TitleView("All Programs")
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 240))], spacing: 0) {
                 ForEach(libraryModel.filteredPrograms) { program in
                     NavigationLink {
@@ -44,14 +41,7 @@ struct ProgramsView: View {
             .padding(.trailing)
         }
         .searchable(text: $libraryModel.searchFilter)
-        .navigationTitle("Software Index")
-        .toolbar {
-            ToolbarItem(placement: .destructiveAction) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
-        }
+        .navigationTitle("Psion Software Index")
         .onAppear {
             libraryModel.start()
         }

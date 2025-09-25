@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,17 +35,21 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
+#if os(macOS)
+            PsionSoftwareIndexLink()
+#else
             Button {
                 sheet = .index
             } label: {
                 Text("Psion Software Index")
             }
+#endif
         }
         .padding()
         .sheet(item: $sheet) { sheet in
             switch sheet {
             case .index:
-                SoftwareIndexView { url in
+                PsionSoftwareIndexView { item in
                     self.sheet = nil
                 }
             }

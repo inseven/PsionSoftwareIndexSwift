@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,17 @@
 // SOFTWARE.
 
 import Combine
+import Foundation
 import SwiftUI
 
 /// Callbacks always occur on `MainActor`.
 protocol LibraryModelDelegate: AnyObject {
 
-    @MainActor func libraryModelDidCancel(libraryModel: LibraryModel)
-    @MainActor func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL)
+    @MainActor
+    func libraryModelDidCancel(libraryModel: LibraryModel)
+
+    @MainActor
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item)
 
 }
 
@@ -34,10 +38,13 @@ protocol LibraryModelDelegate: AnyObject {
     @Published var programs: [Program] = []
     @Published var searchFilter: String = ""
     @Published var filteredPrograms: [Program] = []
+    @Published var error: Error? = nil
 
     weak var delegate: LibraryModelDelegate?
 
     private var cancellables: Set<AnyCancellable> = []
+
+    @Published var downloads: [URL: URLSessionDownloadTask] = [:]
 
     private let filter: (Release) -> Bool
 
@@ -67,7 +74,6 @@ protocol LibraryModelDelegate: AnyObject {
         let url = URL.softwareIndexAPIV1.appendingPathComponent("programs")
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            // TODO: Check for success
             let decoder = JSONDecoder()
             let programs = try decoder.decode([Program].self, from: data).compactMap { program -> Program? in
 
@@ -81,6 +87,7 @@ protocol LibraryModelDelegate: AnyObject {
                             }
                             return Release(uid: release.uid,
                                            kind: release.kind,
+                                           name: release.name,
                                            icon: release.icon,
                                            reference: release.reference,
                                            tags: release.tags)
@@ -122,15 +129,57 @@ protocol LibraryModelDelegate: AnyObject {
         }
     }
 
-    func install(release: Release) async throws {
-        guard let downloadURL = release.downloadURL else {
-            print("No download URL!")
+    func download(_ release: Release) {
+        dispatchPrecondition(condition: .onQueue(.main))
+
+        // Ensure the item has a download URL and there there are no active downloads for that URL.
+        guard let downloadURL = release.downloadURL,
+              downloads[downloadURL] == nil
+        else {
             return
         }
-        let (url, _) = try await URLSession.shared.download(from: downloadURL)
-        await MainActor.run {
-            self.delegate?.libraryModel(libraryModel: self, didSelectURL: url)
+
+        // Create the download task.
+        let downloadTask = URLSession.shared.downloadTask(with: downloadURL) { [weak self] url, response, error in
+            dispatchPrecondition(condition: .notOnQueue(.main))
+            guard let self else {
+                return
+            }
+            do {
+                // First, cean up the download task and observation.
+                DispatchQueue.main.sync {
+                    self.downloads.removeValue(forKey: downloadURL)
+                }
+
+                // Check for errors.
+                guard let url else {
+                    throw error ?? PsionSoftwareIndexError.unknownDownloadFailure
+                }
+
+                // Create a temporary directory and move the downloaded contents to ensure it has the correct filename.
+                let fileManager = FileManager.default
+                let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent((UUID().uuidString))
+                try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true)
+                let itemURL = temporaryDirectory.appendingPathComponent(release.filename)
+                try fileManager.moveItem(at: url, to: itemURL)
+
+                // Call our delegate.
+                let item = PsionSoftwareIndexView.Item(sourceURL: downloadURL, url: itemURL)
+                DispatchQueue.main.async {
+                    self.delegate?.libraryModel(libraryModel: self, didSelectItem: item)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.error = error
+                }
+            }
         }
+
+        // Cache the download task.
+        self.downloads[downloadURL] = downloadTask
+
+        // Start the download.
+        downloadTask.resume()
     }
 
 }

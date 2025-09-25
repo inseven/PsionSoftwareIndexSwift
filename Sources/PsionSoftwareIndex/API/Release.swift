@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,9 @@ public struct Release: Codable, Identifiable {
         return uid + referenceString
     }
 
-    let uid: String  // TODO: Rename to 'identifier'
+    public let uid: String  // TODO: Rename to 'identifier'
     public let kind: Kind
+    public let name: String
     let icon: Image?
     let reference: [ReferenceItem]
     public let tags: [String]

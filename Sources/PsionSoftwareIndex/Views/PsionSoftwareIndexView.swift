@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,13 @@
 
 import SwiftUI
 
+import Interact
+
 class LibraryModelBlockDelegate: LibraryModelDelegate {
 
-    let complete: (URL?) -> Void
+    let complete: (PsionSoftwareIndexView.Item?) -> Void
 
-    init(complete: @escaping (URL?) -> Void) {
+    init(complete: @escaping (PsionSoftwareIndexView.Item?) -> Void) {
         self.complete = complete
     }
 
@@ -32,14 +34,22 @@ class LibraryModelBlockDelegate: LibraryModelDelegate {
         self.complete(nil)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
-        self.complete(url)
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item) {
+        self.complete(item)
     }
 
 }
 
-// TODO: Rename?
-public struct SoftwareIndexView: View {
+public struct PsionSoftwareIndexView: View {
+
+    public struct Item {
+
+        public let sourceURL: URL
+        public let url: URL
+
+    }
+
+    @Environment(\.dismiss) private var dismiss
 
     @StateObject var model: LibraryModel
 
@@ -50,12 +60,12 @@ public struct SoftwareIndexView: View {
         delegate = nil
     }
 
-    public init(filter: @escaping (Release) -> Bool = { _ in true }, completion: @escaping (URL?) -> Void) {
-        let delegate = LibraryModelBlockDelegate(complete: completion)
+    public init(filter: @escaping (Release) -> Bool = { _ in true },
+                completion: @escaping (PsionSoftwareIndexView.Item?) -> Void) {
+        self.delegate = LibraryModelBlockDelegate(complete: completion)
         let libraryModel = LibraryModel(filter: filter)
-        libraryModel.delegate = delegate
         _model = StateObject(wrappedValue: libraryModel)
-        self.delegate = delegate
+        libraryModel.delegate = delegate
     }
 
     public var body: some View {
@@ -64,13 +74,23 @@ public struct SoftwareIndexView: View {
             ProgramsView()
                 .environmentObject(model)
         }
-        .frame(width: 600, height: 400)
+        .presents($model.error)
+        .frame(minWidth: 800, maxWidth: .infinity, minHeight: 600)
 #else
         NavigationView {
             ProgramsView()
-                .environmentObject(model)
+                .toolbar {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .keyboardShortcut(.cancelAction)
+                    }
+                }
         }
         .navigationViewStyle(.stack)
+        .presents($model.error)
+        .environmentObject(model)
 #endif
     }
 

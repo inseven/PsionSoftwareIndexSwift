@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Jason Morley
+// Copyright (c) 2024-2025 Jason Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,11 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     func psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: PsionSoftwareIndexViewController)
     func psionSoftwareIndexViewController(psionSoftwareIndexViewController: PsionSoftwareIndexViewController,
-                                          didSelectURL url: URL)
+                                          didSelectItem item: PsionSoftwareIndexView.Item)
 
 }
 
-@MainActor public class PsionSoftwareIndexViewController: UIHostingController<SoftwareIndexView> {
+@MainActor public class PsionSoftwareIndexViewController: UIHostingController<PsionSoftwareIndexView> {
 
     public weak var delegate: PsionSoftwareIndexViewControllerDelegate?
 
@@ -39,7 +39,7 @@ public protocol PsionSoftwareIndexViewControllerDelegate: AnyObject {
 
     public init(filter: @escaping (Release) -> Bool = { _ in true }) {
         self.libraryModel = LibraryModel(filter: filter)
-        super.init(rootView: SoftwareIndexView(model: libraryModel))
+        super.init(rootView: PsionSoftwareIndexView(model: libraryModel))
         libraryModel.delegate = self
     }
 
@@ -55,8 +55,8 @@ extension PsionSoftwareIndexViewController: LibraryModelDelegate {
         delegate?.psionSoftwareIndexViewCntrollerDidCancel(psionSoftwareIndexViewController: self)
     }
 
-    func libraryModel(libraryModel: LibraryModel, didSelectURL url: URL) {
-        delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectURL: url)
+    func libraryModel(libraryModel: LibraryModel, didSelectItem item: PsionSoftwareIndexView.Item) {
+        delegate?.psionSoftwareIndexViewController(psionSoftwareIndexViewController: self, didSelectItem: item)
     }
 
 }
