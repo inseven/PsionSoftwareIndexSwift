@@ -27,7 +27,7 @@ set -x
 SCRIPT_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 ROOT_DIRECTORY="${SCRIPT_DIRECTORY}/.."
 
-DEFAULT_IPHONE_DESTINATION="${DEFAULT_IPHONE_DESTINATION:-platform=iOS Simulator,name=iPhone 16 Pro}"
+DEFAULT_IPHONE_DESTINATION="${DEFAULT_IPHONE_DESTINATION:-platform=iOS Simulator,name=iPhone 17 Pro}"
 
 cd "$ROOT_DIRECTORY"
 
